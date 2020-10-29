@@ -5,7 +5,7 @@ EB's text based game code in Java to a React app created with create-react-app a
 
 This is written as a playground to teach some basics of React and Typescript for a modern SPA.
 
-It includes layout and modern concepts like typescript, React, Functional Components, Hooks and Styled Components.
+It includes layout and concepts like Typescript, React, Functional Components, Hooks and Styled Components.
 
 
 # Installation
@@ -24,5 +24,11 @@ You should also have vscode installed and from another terminal window you can r
 code .
 ```
 
+or you can open the folder from within vscode.
+
 Any changes you make in vscode should immediately take effect in your browser.
 
+
+## This isn't a complete port
+
+Some exercises have been left for the user. Mob Death,looting potions, etc have been left to code.
