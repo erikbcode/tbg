@@ -1,0 +1,63 @@
+{
+  "settings": {
+    "import/resolver": {
+     "babel-module":{
+       "extensions": [".js", ".jsx", ".ts", ".tsx"] 
+     }
+    }
+  },
+  "extends": [
+    "airbnb", 
+    "airbnb/hooks", 
+    "prettier", 
+    "plugin:jest/recommended"
+  ],
+  "plugins": ["prettier", "jest"],
+  "parser": "babel-eslint",
+  "rules": {
+    "import/extensions": ["error", "ignorePackages", {
+      "js": "never",
+      "mjs": "never",
+      "jsx": "never",
+      "ts": "never",
+      "tsx": "never"
+    }],
+    "prettier/prettier": "error",
+    "no-process-exit": "off",
+    "object-shorthand": "off",
+    "no-use-before-define":"off",
+    "import/prefer-default-export": "off",
+    "no-console": 1,
+    "react/jsx-filename-extension": [
+      1,
+      { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
+    ],
+  "no-shadow": "off",
+  "@typescript-eslint/no-shadow": ["error"]
+  },
+  "env": {
+    "jest": true
+  },
+  "overrides": [
+    {
+      // for files matching this pattern
+      "files": ["*.ts", "*.tsx"],
+      // following config will override "normal" config
+      "parser": "@typescript-eslint/parser",
+      "plugins": ["@typescript-eslint"],
+      "rules": {
+        "camelcase":"off",
+        "react/prop-types": "off",
+        "import/prefer-default-export": "off",
+        "@typescript-eslint/no-unused-vars": [2, { "args": "none" }],
+    "import/extensions": ["error", "ignorePackages", {
+      "js": "never",
+      "mjs": "never",
+      "jsx": "never",
+      "ts": "never",
+      "tsx": "never"
+    }]
+      }
+    }
+  ]
+}
