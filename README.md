@@ -1,11 +1,13 @@
 # Simple React App Port
-This is a port of https://github.com/ebuinevicius/TextBasedGame
+This is a clone of https://github.com/wuntusk/tbg
 
 EB's text based game code in Java to a React app created with create-react-app as a starter.
 
 This is written as a playground to teach some basics of React and Typescript for a modern SPA.
 
 It includes layout and concepts like Typescript, React, Functional Components, Hooks and Styled Components.
+
+The program will be modified to include new components implemented by Erik Buinevicius.
 
 
 # Installation

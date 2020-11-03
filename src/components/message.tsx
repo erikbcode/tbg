@@ -5,5 +5,9 @@ export interface MessageProps {
 }
 
 export const Message: FunctionComponent<MessageProps> = ({ message }) => {
-  return <h2>{message}</h2>;
+  return (
+    <div>
+      <b>{message}</b>
+    </div>
+  );
 };
