@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 
 export interface FightChoicesProps {
-  disabled?: boolean;
+  disabled?: boolean; // ? tells you this var is optional
   onAttack: () => void;
   onPotion: () => void;
   onRun: () => void;
