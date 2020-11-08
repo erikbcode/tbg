@@ -18,16 +18,18 @@ const HeaderStyled = styled.header`
   color: white;
 `;
 
+// JavaScript object
 const initialHero = {
   name: 'Erikker',
   maxHP: 150,
   currentHP: 150,
-  attackDamage: 17,
+  attackDamage: 50,
   isNPC: false,
   potionCount: 3,
 };
 
 function App() {
+  // Shown below are hooks. useState() sets the initial value of the variable shown in blue, creates a setter function shown in yellow
   const [messageShowing, setMessageShowing] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [hero, setHero] = useState(initialHero);
@@ -36,6 +38,7 @@ function App() {
   // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (messageShowing) {
+      // What is the syntax on the next line?
       const timer = setTimeout(() => {
         setMessageShowing(false);
       }, 1500);
@@ -43,22 +46,34 @@ function App() {
     }
   }, [messageShowing]);
 
-  const onAttack = () => {
-    console.log('attack');
+  const handleAttack = () => {
+    console.log('attack'); // eslint-disable-line no-console
     const damageDealt = Rand(hero.attackDamage);
     const damageTaken = Rand(currentMob.attackDamage);
     const newMob = {
       ...currentMob,
       currentHP: currentMob.currentHP - damageDealt,
     };
-    setCurrentMob(newMob);
+    if (newMob.currentHP > 0) {
+      setCurrentMob(newMob);
+    }
     const newHero = { ...hero, currentHP: hero.currentHP - damageTaken };
     setHero(newHero);
 
     let resultsMessage: string;
 
     if (newHero.currentHP < 1) {
-      resultsMessage = 'You died!';
+      resultsMessage = "You died! Click 'start over' to continue.";
+    } else if (newMob.currentHP < 1) {
+      // Functionality I added
+      resultsMessage = `You killed ${newMob.name}! They dealt ${damageTaken} damage to you before falling.`;
+      setCurrentMob(spawnMob());
+      const potionCheck = Rand(4);
+      if (potionCheck === 0) {
+        // 20% chance to spawn a potion
+        resultsMessage += ` ${newMob.name} dropped a potion.`;
+        newHero.potionCount += 1;
+      }
     } else {
       const myDamageMessage =
         damageDealt < 1
@@ -76,14 +91,16 @@ function App() {
     setStatusMessage(resultsMessage);
     setMessageShowing(true);
   };
-  const onRun = () => {
-    console.log('run');
+
+  const handleRun = () => {
+    console.log('run'); // eslint-disable-line no-console
     setStatusMessage(`You run like a coward!`);
+    setCurrentMob(spawnMob());
     setMessageShowing(true);
   };
 
-  const onPotion = () => {
-    console.log(`potion ${hero.potionCount}`);
+  const handlePotion = () => {
+    console.log(`potion ${hero.potionCount}`); // eslint-disable-line no-console
 
     if (hero.potionCount < 1) {
       setStatusMessage(`You are out of potions!`);
@@ -113,9 +130,9 @@ function App() {
           mob={currentMob}
           hero={hero}
           buttonsDisabled={messageShowing}
-          onAttack={onAttack}
-          onRun={onRun}
-          onPotion={onPotion}
+          onAttack={handleAttack}
+          onRun={handleRun}
+          onPotion={handlePotion}
         />
         {messageShowing && <Message message={statusMessage} />}
         <a href="/">Start Over</a>
