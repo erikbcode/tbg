@@ -9,8 +9,8 @@ const MobStyles = styled.div`
 const HPStyles = styled.span`
   font-size: 1.5rem;
   font-weight: bold;
-  color: #023843;
-  margin-right: 0.75rem;
+  color: #000000;
+  margin-right: 0.25rem;
 `;
 
 const MobName = styled.span`
@@ -27,12 +27,14 @@ interface HealthProps {
 // putting <HealthProps> next to span tells you the type of variable that props is
 const MobHealth = styled.span<HealthProps>`
   color: ${(props) => (props.currentHP / props.maxHP >= 0.5 ? 'green' : 'red')};
+  margin-right: 1rem;
 `;
 
 export interface MobProps {
   mob: MobStats | PlayerStats;
 }
 
+// In the below function, why is the line <MobHealth currentHP = {mob.currentHP}... needed if we also call mob.currentHP below?
 export const Mob: FunctionComponent<MobProps> = ({ mob }) => {
   return (
     <MobStyles>
