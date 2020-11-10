@@ -28,6 +28,7 @@ interface HealthProps {
 const MobHealth = styled.span<HealthProps>`
   color: ${(props) => (props.currentHP / props.maxHP >= 0.5 ? 'green' : 'red')};
   margin-right: 1rem;
+  font-weight: bold;
 `;
 
 export interface MobProps {
@@ -35,6 +36,7 @@ export interface MobProps {
 }
 
 // In the below function, why is the line <MobHealth currentHP = {mob.currentHP}... needed if we also call mob.currentHP below?
+// What does the line {!mob.isNPC && `potions...} do?
 export const Mob: FunctionComponent<MobProps> = ({ mob }) => {
   return (
     <MobStyles>
@@ -43,7 +45,9 @@ export const Mob: FunctionComponent<MobProps> = ({ mob }) => {
       <MobHealth currentHP={mob.currentHP} maxHP={mob.maxHP}>
         {`${mob.currentHP}/${mob.maxHP} `}
       </MobHealth>
-      {!mob.isNPC && `Potions: ${(mob as PlayerStats).potionCount}`}
+      <HPStyles>
+        {!mob.isNPC && `Potions: ${(mob as PlayerStats).potionCount}`}
+      </HPStyles>
     </MobStyles>
   );
 };
