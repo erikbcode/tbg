@@ -21,6 +21,7 @@ export const availableEnemies: Array<MobStats> = [
   { name: 'Assassin', maxHP: 10, currentHP: 0, attackDamage: 50, isNPC: true },
 ];
 
+// MobStats is the return type
 export function spawnMob(): MobStats {
   const enemy = availableEnemies[Rand(availableEnemies.length - 1)];
   enemy.currentHP = enemy.maxHP;

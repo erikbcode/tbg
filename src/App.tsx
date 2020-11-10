@@ -35,6 +35,7 @@ function App() {
   const [hero, setHero] = useState(initialHero);
   const [currentMob, setCurrentMob] = useState(spawnMob());
 
+  // useEffect allows us to implement a timer on the messageShowing, so that it only appears for 2 seconds
   // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (messageShowing) {
@@ -66,7 +67,7 @@ function App() {
       resultsMessage = "You died! Click 'start over' to continue.";
     } else if (newMob.currentHP < 1) {
       // Functionality I added
-      resultsMessage = `You killed ${newMob.name}! They dealt ${damageTaken} damage to you before falling.`;
+      resultsMessage = `You killed ${newMob.name}! They dealt ${damageTaken} damage to you before dying.`;
       setCurrentMob(spawnMob());
       const potionCheck = Rand(4);
       if (potionCheck === 0) {
@@ -94,8 +95,13 @@ function App() {
 
   const handleRun = () => {
     console.log('run'); // eslint-disable-line no-console
-    setStatusMessage(`You run like a coward!`);
-    setCurrentMob(spawnMob());
+    let resultsMessage: string;
+    resultsMessage = 'You run like a coward!';
+    const newMob = spawnMob();
+    setCurrentMob(newMob);
+    // Why does the following line result in previous mob's name, without the line 'const newMob = spawnMob()' above? IE setCurrentMob(spawnMob()) did not result in currentMob being changed
+    resultsMessage += ` A ${newMob.name} has found you!`;
+    setStatusMessage(resultsMessage);
     setMessageShowing(true);
   };
 
@@ -104,12 +110,14 @@ function App() {
 
     if (hero.potionCount < 1) {
       setStatusMessage(`You are out of potions!`);
+    } else if (hero.currentHP === hero.maxHP) {
+      setStatusMessage('You are already at full HP!');
     } else {
       let healFor = potionHealAmount;
 
       healFor = Math.min(healFor, hero.maxHP - hero.currentHP);
       const newHero = {
-        ...hero,
+        ...hero, /// what does ... do in this?
         currentHP: hero.currentHP + healFor,
         potionCount: hero.potionCount - 1,
       };

@@ -13,6 +13,7 @@ export const FightChoices: FunctionComponent<FightChoicesProps> = ({
   onPotion,
   onRun,
 }) => {
+  // does the above line make FightChoices into its own function? Or why is it an arrow function?
   return (
     <div>
       <button disabled={disabled} type="button" onClick={onAttack}>
