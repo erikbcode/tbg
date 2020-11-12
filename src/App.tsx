@@ -20,9 +20,9 @@ const HeaderStyled = styled.header`
 
 // JavaScript object
 const initialHero = {
-  name: 'Erikker',
-  maxHP: 150,
-  currentHP: 150,
+  name: 'Erik',
+  maxHP: 100,
+  currentHP: 100,
   attackDamage: 50,
   isNPC: false,
   potionCount: 3,
@@ -34,6 +34,7 @@ function App() {
   const [statusMessage, setStatusMessage] = useState('');
   const [hero, setHero] = useState(initialHero);
   const [currentMob, setCurrentMob] = useState(spawnMob());
+  const [isDead, setIsDead] = useState(false);
 
   // useEffect allows us to implement a timer on the messageShowing, so that it only appears for 2 seconds
   // eslint-disable-next-line consistent-return
@@ -64,7 +65,8 @@ function App() {
     let resultsMessage: string;
 
     if (newHero.currentHP < 1) {
-      resultsMessage = "You died! Click 'start over' to continue.";
+      resultsMessage = '';
+      setIsDead(true);
     } else if (newMob.currentHP < 1) {
       // Functionality I added
       resultsMessage = `You killed ${newMob.name}! They dealt ${damageTaken} damage to you before dying.`;
@@ -94,13 +96,14 @@ function App() {
   };
 
   const handleRun = () => {
-    console.log('run'); // eslint-disable-line no-console
     let resultsMessage: string;
+    console.log('run'); // eslint-disable-line no-console
     resultsMessage = 'You run like a coward!';
     const newMob = spawnMob();
     setCurrentMob(newMob);
     // Why does the following line result in previous mob's name, without the line 'const newMob = spawnMob()' above? IE setCurrentMob(spawnMob()) did not result in currentMob being changed
     resultsMessage += ` A ${newMob.name} has found you!`;
+
     setStatusMessage(resultsMessage);
     setMessageShowing(true);
   };
@@ -134,14 +137,22 @@ function App() {
           <img src={logo} className="App-logo" alt="logo" />
           <p>{`Welcome to the Dungeon ${hero.name}!`}</p>
         </HeaderStyled>
-        <Fight
-          mob={currentMob}
-          hero={hero}
-          buttonsDisabled={messageShowing}
-          onAttack={handleAttack}
-          onRun={handleRun}
-          onPotion={handlePotion}
-        />
+        {isDead ? (
+          <h2>YOU DIED. Click Start Over below to continue.</h2>
+        ) : (
+          <Fight
+            mob={currentMob}
+            hero={hero}
+            buttonsDisabled={messageShowing}
+            potionDisabled={
+              hero.potionCount < 1 || hero.maxHP === hero.currentHP
+            }
+            onAttack={handleAttack}
+            onRun={handleRun}
+            onPotion={handlePotion}
+          />
+        )}
+
         {messageShowing && <Message message={statusMessage} />}
         <a href="/">Start Over</a>
       </div>
