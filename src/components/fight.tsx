@@ -7,6 +7,7 @@ export interface FightProps {
   hero: PlayerStats;
   mob: MobStats;
   buttonsDisabled?: boolean;
+  potionDisabled?: boolean;
   onAttack: () => void;
   onPotion: () => void;
   onRun: () => void;
@@ -16,6 +17,7 @@ export const Fight: FunctionComponent<FightProps> = ({
   hero,
   mob,
   buttonsDisabled,
+  potionDisabled,
   onAttack,
   onRun,
   onPotion,
@@ -25,6 +27,7 @@ export const Fight: FunctionComponent<FightProps> = ({
       <FightStatus mob={mob} hero={hero} />
       <FightChoices
         disabled={buttonsDisabled}
+        potionDisabled={potionDisabled}
         onAttack={onAttack}
         onRun={onRun}
         onPotion={onPotion}
