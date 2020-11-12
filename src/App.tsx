@@ -26,6 +26,8 @@ const initialHero = {
   attackDamage: 50,
   isNPC: false,
   potionCount: 3,
+  abilityCooldown: 0,
+  killCount: 0,
 };
 
 function App() {
@@ -48,36 +50,41 @@ function App() {
     }
   }, [messageShowing]);
 
+  /*
+  handleAttack calculates random damage numbers for both the player and mob based on their attackDamage values. 
+  The mob and player's HP numbers are changed to reflect the attacks. A new mob is respawned or the game ends if needed.
+  Potions have a random chance of dropping for the player on mob death.
+  */
   const handleAttack = () => {
     console.log('attack'); // eslint-disable-line no-console
     const damageDealt = Rand(hero.attackDamage);
     const damageTaken = Rand(currentMob.attackDamage);
+    // Reflect HP change for mob and player
     const newMob = {
       ...currentMob,
       currentHP: currentMob.currentHP - damageDealt,
     };
-    if (newMob.currentHP > 0) {
-      setCurrentMob(newMob);
-    }
+    setCurrentMob(newMob);
     const newHero = { ...hero, currentHP: hero.currentHP - damageTaken };
     setHero(newHero);
-
+    // Message to be output when button is clicked and actions are taken.
     let resultsMessage: string;
-
+    // If player is dead, isDead set to true resulting in buttons and fight section no longer being drawn.
     if (newHero.currentHP < 1) {
       resultsMessage = '';
-      setIsDead(true);
+      setIsDead(true); // End the game
     } else if (newMob.currentHP < 1) {
-      // Functionality I added
+      // Player is not dead but mob is:
       resultsMessage = `You killed ${newMob.name}! They dealt ${damageTaken} damage to you before dying.`;
-      setCurrentMob(spawnMob());
+      setCurrentMob(spawnMob()); // Spawn a new mob
+      // Add a potion 20% of the time a mob is killed
       const potionCheck = Rand(4);
       if (potionCheck === 0) {
-        // 20% chance to spawn a potion
         resultsMessage += ` ${newMob.name} dropped a potion.`;
         newHero.potionCount += 1;
       }
     } else {
+      // Player and mob are both alive
       const myDamageMessage =
         damageDealt < 1
           ? `You miss the ${currentMob.name}`
@@ -95,6 +102,9 @@ function App() {
     setMessageShowing(true);
   };
 
+  /*
+  handleRun allows the player to spawn a new mob with full HP. 
+  */
   const handleRun = () => {
     let resultsMessage: string;
     console.log('run'); // eslint-disable-line no-console
@@ -108,25 +118,24 @@ function App() {
     setMessageShowing(true);
   };
 
+  /*
+  handlePotion allows the player to use a potion, assuming they have one. The potion heals for a certain amount based on healFor variable
+  */
   const handlePotion = () => {
     console.log(`potion ${hero.potionCount}`); // eslint-disable-line no-console
 
-    if (hero.potionCount < 1) {
-      setStatusMessage(`You are out of potions!`);
-    } else if (hero.currentHP === hero.maxHP) {
-      setStatusMessage('You are already at full HP!');
-    } else {
-      let healFor = potionHealAmount;
+    let healFor = potionHealAmount;
 
-      healFor = Math.min(healFor, hero.maxHP - hero.currentHP);
-      const newHero = {
-        ...hero, /// what does ... do in this?
-        currentHP: hero.currentHP + healFor,
-        potionCount: hero.potionCount - 1,
-      };
-      setHero(newHero);
-      setStatusMessage(`You heal yourself for ${healFor} points!`);
-    }
+    healFor = Math.min(healFor, hero.maxHP - hero.currentHP);
+    const newHero = {
+      // ... sets values of newHero to those of old hero, operations below set specific variables to new values
+      ...hero,
+      currentHP: hero.currentHP + healFor,
+      potionCount: hero.potionCount - 1,
+    };
+
+    setHero(newHero);
+    setStatusMessage(`You heal yourself for ${healFor} points!`);
     setMessageShowing(true);
   };
 
