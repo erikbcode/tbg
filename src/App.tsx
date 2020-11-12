@@ -102,9 +102,7 @@ function App() {
     setMessageShowing(true);
   };
 
-  /*
-  handleRun allows the player to spawn a new mob with full HP. 
-  */
+  // handleRun allows the player to spawn a new mob with full HP.
   const handleRun = () => {
     let resultsMessage: string;
     console.log('run'); // eslint-disable-line no-console
@@ -118,9 +116,7 @@ function App() {
     setMessageShowing(true);
   };
 
-  /*
-  handlePotion allows the player to use a potion, assuming they have one. The potion heals for a certain amount based on healFor variable
-  */
+  // handlePotion allows the player to use a potion, assuming they have one. The potion heals for a certain amount based on healFor variable
   const handlePotion = () => {
     console.log(`potion ${hero.potionCount}`); // eslint-disable-line no-console
 
