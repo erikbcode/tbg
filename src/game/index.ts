@@ -10,6 +10,7 @@ export interface PlayerStats extends MobStats {
   potionCount: number;
   abilityCooldown: number;
   killCount: number;
+  abilityName: string;
 }
 
 export function Rand(max: number): number {
@@ -32,8 +33,9 @@ export const availableHeros: Array<PlayerStats> = [
     attackDamage: 10,
     isNPC: false,
     potionCount: 3,
-    abilityCooldown: 5,
+    abilityCooldown: 0, // will be 10
     killCount: 0,
+    abilityName: 'Fireball',
   },
   {
     name: 'Warrior',
@@ -42,10 +44,18 @@ export const availableHeros: Array<PlayerStats> = [
     attackDamage: 30,
     isNPC: false,
     potionCount: 3,
-    abilityCooldown: 7,
+    abilityCooldown: 0, // will be 7
     killCount: 0,
+    abilityName: 'Shield',
   },
 ];
+
+// Function to spawn a hero, index is the class corresponding to selection
+export function spawnHero(index: number): PlayerStats {
+  const hero = availableHeros[index];
+  hero.currentHP = hero.maxHP;
+  return hero;
+}
 
 // MobStats is the return type
 export function spawnMob(): MobStats {
