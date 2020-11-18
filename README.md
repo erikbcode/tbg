@@ -1,5 +1,5 @@
 # Simple React App Port
-This is a clone of https://github.com/wuntusk/tbg
+This was originally a clone of https://github.com/wuntusk/tbg
 
 EB's text based game code in Java to a React app created with create-react-app as a starter.
 
@@ -33,4 +33,9 @@ Any changes you make in vscode should immediately take effect in your browser.
 
 ## This isn't a complete port
 
-Some exercises have been left for the user. Mob Death,looting potions, etc have been left to code.
+Many exercises have been left for EB such a mob death, potion drops, etc.
+The above functionalities have been implemented by EB as of 11/18/2020.
+
+## TODO
+
+Next steps include finalizing the class system, adding items, changes of stats, kill rewards etc. 
