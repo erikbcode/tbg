@@ -8,9 +8,11 @@ export interface FightProps {
   mob: MobStats;
   buttonsDisabled?: boolean;
   potionDisabled?: boolean;
+  abilityDisabled?: boolean;
   onAttack: () => void;
   onPotion: () => void;
   onRun: () => void;
+  onAbility: () => void;
 }
 
 export const Fight: FunctionComponent<FightProps> = ({
@@ -18,9 +20,11 @@ export const Fight: FunctionComponent<FightProps> = ({
   mob,
   buttonsDisabled,
   potionDisabled,
+  abilityDisabled,
   onAttack,
   onRun,
   onPotion,
+  onAbility,
 }) => {
   return (
     <div>
@@ -28,9 +32,11 @@ export const Fight: FunctionComponent<FightProps> = ({
       <FightChoices
         disabled={buttonsDisabled}
         potionDisabled={potionDisabled}
+        abilityDisabled={abilityDisabled}
         onAttack={onAttack}
         onRun={onRun}
         onPotion={onPotion}
+        onAbility={onAbility}
       />
     </div>
   );
@@ -38,4 +44,6 @@ export const Fight: FunctionComponent<FightProps> = ({
 
 Fight.defaultProps = {
   buttonsDisabled: false,
+  potionDisabled: false,
+  abilityDisabled: false,
 };

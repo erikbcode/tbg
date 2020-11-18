@@ -3,19 +3,30 @@ import React, { FunctionComponent } from 'react';
 export interface FightChoicesProps {
   disabled?: boolean; // ? tells you this var is optional
   potionDisabled?: boolean;
+  abilityDisabled?: boolean;
   onAttack: () => void;
   onPotion: () => void;
   onRun: () => void;
+  onAbility: () => void;
 }
 
-export const FightChoices: FunctionComponent<FightChoicesProps> = (props) => {
-  const { disabled, potionDisabled, onAttack, onPotion, onRun } = props;
-
+export const FightChoices: FunctionComponent<FightChoicesProps> = ({
+  disabled,
+  potionDisabled,
+  abilityDisabled,
+  onAttack,
+  onPotion,
+  onRun,
+  onAbility,
+}) => {
   // does the above line make FightChoices into its own function? Or why is it an arrow function?
   return (
     <div>
       <button disabled={disabled} type="button" onClick={onAttack}>
         Attack
+      </button>
+      <button disabled={abilityDisabled} type="button" onClick={onAbility}>
+        Ability
       </button>
       <button
         disabled={potionDisabled || disabled}
@@ -34,9 +45,10 @@ export const FightChoices: FunctionComponent<FightChoicesProps> = (props) => {
 FightChoices.defaultProps = {
   disabled: false,
   potionDisabled: false,
+  abilityDisabled: false,
 };
 
-// Below are various ways of writing the same function
+// Below are various ways of writing the same function in JavaScript
 
 interface AddProps {
   a: number;
