@@ -50,8 +50,8 @@ export interface MobProps {
 // In the below function, why is the line <MobHealth currentHP = {mob.currentHP}... needed if we also call mob.currentHP below?
 // What does the line {!mob.isNPC && `potions...} do?
 export const Mob: FunctionComponent<MobProps> = ({ mob }) => {
-  if (mob.name === 'Warrior') {
-    // Add in shield component to display
+  if (mob.isNPC === false) {
+    // Return data for player
     return (
       <MobStyles>
         <MobName>{`${mob.name}`}</MobName>
@@ -60,12 +60,15 @@ export const Mob: FunctionComponent<MobProps> = ({ mob }) => {
           {`${mob.currentHP}/${mob.maxHP} `}
         </MobHealth>
         {mob.name === 'Warrior' && (
-          <ShieldHealth
-            currentShield={(mob as PlayerStats).shield}
-            maxShield={50}
-          >
-            {`Shield: ${(mob as PlayerStats).shield}/${50}`}
-          </ShieldHealth>
+          <>
+            <HPStyles>Shield: </HPStyles>
+            <ShieldHealth
+              currentShield={(mob as PlayerStats).shield}
+              maxShield={50}
+            >
+              {`${(mob as PlayerStats).shield}/${50}`}
+            </ShieldHealth>
+          </>
         )}
         <HPStyles>
           {!mob.isNPC && `Potions: ${(mob as PlayerStats).potionCount}`}
@@ -76,24 +79,8 @@ export const Mob: FunctionComponent<MobProps> = ({ mob }) => {
       </MobStyles>
     );
   }
-  if (mob.name === 'Mage') {
-    return (
-      <MobStyles>
-        <MobName>{`${mob.name}`}</MobName>
-        <HPStyles>HP:</HPStyles>
-        <MobHealth currentHP={mob.currentHP} maxHP={mob.maxHP}>
-          {`${mob.currentHP}/${mob.maxHP} `}
-        </MobHealth>
-        <HPStyles>
-          {!mob.isNPC && `Potions: ${(mob as PlayerStats).potionCount}`}
-        </HPStyles>
-        <HPStyles>
-          {`Cooldown: ${Math.max((mob as PlayerStats).abilityCooldown, 0)}`}
-        </HPStyles>
-      </MobStyles>
-    );
-  }
 
+  // return data for mob
   return (
     <MobStyles>
       <MobName>{`${mob.name}`}</MobName>
