@@ -3,9 +3,10 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import styled from 'styled-components';
 import logo from './logo.svg';
 import './App.css';
-import { Rand, spawnMob, potionHealAmount } from './game';
+import { Rand, spawnMob, potionHealAmount, spawnHero } from './game';
 import { Message } from './components/message';
 import { Fight } from './components/fight';
+import { Select } from './class-select/select';
 
 const HeaderStyled = styled.header`
   background-color: #282c34;
@@ -28,6 +29,7 @@ const initialHero = {
   potionCount: 3,
   abilityCooldown: 0,
   killCount: 0,
+  abilityName: 'none',
 };
 
 function App() {
@@ -37,6 +39,7 @@ function App() {
   const [hero, setHero] = useState(initialHero);
   const [currentMob, setCurrentMob] = useState(spawnMob());
   const [isDead, setIsDead] = useState(false);
+  const [heroSelected, setHeroSelected] = useState(false);
 
   // useEffect allows us to implement a timer on the messageShowing, so that it only appears for 2 seconds
   // eslint-disable-next-line consistent-return
@@ -50,6 +53,41 @@ function App() {
     }
   }, [messageShowing]);
 
+  // Class selections for player
+  const handleMage = () => {
+    const newHero = spawnHero(0);
+    setHeroSelected(true);
+    setHero(newHero);
+  };
+
+  const handleWarrior = () => {
+    const newHero = spawnHero(1);
+    setHeroSelected(true);
+    setHero(newHero);
+  };
+
+  const handleAbility = () => {
+    let resultsMessage = '';
+    console.log('ability'); // eslint-disable-line no-console
+    if (hero.name === 'Mage') {
+      const damageDealt = 50;
+      const newMob = {
+        ...currentMob,
+        currentHP: currentMob.currentHP - damageDealt,
+      };
+      setCurrentMob(newMob);
+      const newHero = {
+        ...hero,
+        abilityCooldown: 10,
+      };
+      setHero(newHero);
+      resultsMessage = `You hit the ${currentMob.name} with a fireball for 50 damage!`;
+    } else if (hero.name === 'Warrior') {
+      // TODO
+    }
+    setStatusMessage(resultsMessage);
+    setMessageShowing(true);
+  };
   /*
   handleAttack calculates random damage numbers for both the player and mob based on their attackDamage values. 
   The mob and player's HP numbers are changed to reflect the attacks. A new mob is respawned or the game ends if needed.
@@ -65,7 +103,11 @@ function App() {
       currentHP: currentMob.currentHP - damageDealt,
     };
     setCurrentMob(newMob);
-    const newHero = { ...hero, currentHP: hero.currentHP - damageTaken };
+    const newHero = {
+      ...hero,
+      currentHP: hero.currentHP - damageTaken,
+      abilityCooldown: hero.abilityCooldown - 1,
+    };
     setHero(newHero);
     // Message to be output when button is clicked and actions are taken.
     let resultsMessage: string;
@@ -109,6 +151,11 @@ function App() {
     resultsMessage = 'You run like a coward!';
     const newMob = spawnMob();
     setCurrentMob(newMob);
+    const newHero = {
+      ...hero,
+      abilityCooldown: hero.abilityCooldown - 1,
+    };
+    setHero(newHero);
     // Why does the following line result in previous mob's name, without the line 'const newMob = spawnMob()' above? IE setCurrentMob(spawnMob()) did not result in currentMob being changed
     resultsMessage += ` A ${newMob.name} has found you!`;
 
@@ -128,12 +175,46 @@ function App() {
       ...hero,
       currentHP: hero.currentHP + healFor,
       potionCount: hero.potionCount - 1,
+      abilityCooldown: hero.abilityCooldown - 1,
     };
 
     setHero(newHero);
     setStatusMessage(`You heal yourself for ${healFor} points!`);
     setMessageShowing(true);
   };
+  // if hero selected, draw game otherwise draw class selection
+  if (heroSelected) {
+    return (
+      <Router>
+        <div className="App">
+          <HeaderStyled>
+            <img src={logo} className="App-logo" alt="logo" />
+            <p>{`Welcome to the Dungeon ${hero.name}!`}</p>
+          </HeaderStyled>
+          {isDead ? (
+            <h2>YOU DIED. Click Start Over below to continue.</h2>
+          ) : (
+            <Fight
+              mob={currentMob}
+              hero={hero}
+              buttonsDisabled={messageShowing}
+              potionDisabled={
+                hero.potionCount < 1 || hero.maxHP === hero.currentHP
+              }
+              abilityDisabled={hero.abilityCooldown > 0}
+              onAttack={handleAttack}
+              onRun={handleRun}
+              onPotion={handlePotion}
+              onAbility={handleAbility}
+            />
+          )}
+
+          {messageShowing && <Message message={statusMessage} />}
+          <a href="/">Start Over</a>
+        </div>
+      </Router>
+    );
+  }
 
   return (
     <Router>
@@ -142,24 +223,8 @@ function App() {
           <img src={logo} className="App-logo" alt="logo" />
           <p>{`Welcome to the Dungeon ${hero.name}!`}</p>
         </HeaderStyled>
-        {isDead ? (
-          <h2>YOU DIED. Click Start Over below to continue.</h2>
-        ) : (
-          <Fight
-            mob={currentMob}
-            hero={hero}
-            buttonsDisabled={messageShowing}
-            potionDisabled={
-              hero.potionCount < 1 || hero.maxHP === hero.currentHP
-            }
-            onAttack={handleAttack}
-            onRun={handleRun}
-            onPotion={handlePotion}
-          />
-        )}
-
-        {messageShowing && <Message message={statusMessage} />}
-        <a href="/">Start Over</a>
+        <h3>Select Your Class!</h3>
+        <Select onMage={handleMage} onWarrior={handleWarrior} />
       </div>
     </Router>
   );
