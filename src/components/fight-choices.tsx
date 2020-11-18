@@ -25,7 +25,11 @@ export const FightChoices: FunctionComponent<FightChoicesProps> = ({
       <button disabled={disabled} type="button" onClick={onAttack}>
         Attack
       </button>
-      <button disabled={abilityDisabled} type="button" onClick={onAbility}>
+      <button
+        disabled={abilityDisabled || disabled}
+        type="button"
+        onClick={onAbility}
+      >
         Ability
       </button>
       <button
