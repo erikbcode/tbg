@@ -10,7 +10,9 @@ export interface PlayerStats extends MobStats {
   potionCount: number;
   abilityCooldown: number;
   killCount: number;
+  maxCooldown: number;
   abilityName: string;
+  shield: number;
 }
 
 export function Rand(max: number): number {
@@ -18,9 +20,9 @@ export function Rand(max: number): number {
 }
 
 export const availableEnemies: Array<MobStats> = [
-  { name: 'Skeleton', maxHP: 75, currentHP: 0, attackDamage: 25, isNPC: true },
+  { name: 'Skeleton', maxHP: 75, currentHP: 0, attackDamage: 20, isNPC: true },
   { name: 'Zombie', maxHP: 25, currentHP: 0, attackDamage: 10, isNPC: true },
-  { name: 'Warrior', maxHP: 200, currentHP: 0, attackDamage: 3, isNPC: true },
+  { name: 'Fighter', maxHP: 150, currentHP: 0, attackDamage: 15, isNPC: true },
   { name: 'Assassin', maxHP: 10, currentHP: 0, attackDamage: 50, isNPC: true },
 ];
 
@@ -28,25 +30,29 @@ export const availableEnemies: Array<MobStats> = [
 export const availableHeros: Array<PlayerStats> = [
   {
     name: 'Mage',
-    maxHP: 90,
+    maxHP: 100,
     currentHP: 0,
-    attackDamage: 10,
+    attackDamage: 20,
     isNPC: false,
     potionCount: 3,
-    abilityCooldown: 0, // will be 10
+    abilityCooldown: 0,
+    maxCooldown: 10,
     killCount: 0,
     abilityName: 'Fireball',
+    shield: 0,
   },
   {
     name: 'Warrior',
     maxHP: 150,
     currentHP: 0,
-    attackDamage: 30,
+    attackDamage: 40,
     isNPC: false,
     potionCount: 3,
-    abilityCooldown: 0, // will be 7
+    abilityCooldown: 0,
+    maxCooldown: 7,
     killCount: 0,
     abilityName: 'Shield',
+    shield: 0,
   },
 ];
 
