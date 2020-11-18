@@ -28,8 +28,10 @@ const initialHero = {
   isNPC: false,
   potionCount: 3,
   abilityCooldown: 0,
+  maxCooldown: 0,
   killCount: 0,
-  abilityName: 'none',
+  shield: 0,
+  abilityName: '',
 };
 
 function App() {
@@ -53,23 +55,25 @@ function App() {
     }
   }, [messageShowing]);
 
-  // Class selections for player
+  // Class selection handlers for player
   const handleMage = () => {
-    const newHero = spawnHero(0);
+    const newHero = spawnHero(0); // Comes from index.ts array
     setHeroSelected(true);
     setHero(newHero);
   };
 
   const handleWarrior = () => {
-    const newHero = spawnHero(1);
+    const newHero = spawnHero(1); // Comes from index.ts array
     setHeroSelected(true);
     setHero(newHero);
   };
 
+  // Handler for ability button, functionality changes depending on class
   const handleAbility = () => {
     let resultsMessage = '';
     console.log('ability'); // eslint-disable-line no-console
     if (hero.name === 'Mage') {
+      // Fireball ability
       const damageDealt = 50;
       const newMob = {
         ...currentMob,
@@ -78,12 +82,23 @@ function App() {
       setCurrentMob(newMob);
       const newHero = {
         ...hero,
-        abilityCooldown: 10,
+        abilityCooldown: hero.maxCooldown,
       };
       setHero(newHero);
       resultsMessage = `You hit the ${currentMob.name} with a fireball for 50 damage!`;
+      if (newMob.currentHP < 0) {
+        resultsMessage = `You killed ${currentMob.name}!`;
+        setCurrentMob(spawnMob());
+      }
     } else if (hero.name === 'Warrior') {
-      // TODO
+      // Shield ability
+      const newHero = {
+        ...hero,
+        abilityCooldown: hero.maxCooldown,
+        shield: 50,
+      };
+      setHero(newHero);
+      resultsMessage = 'You shield yourself from the next 50 damage!';
     }
     setStatusMessage(resultsMessage);
     setMessageShowing(true);
@@ -102,46 +117,61 @@ function App() {
       ...currentMob,
       currentHP: currentMob.currentHP - damageDealt,
     };
+    let newHero = { ...hero };
     setCurrentMob(newMob);
-    const newHero = {
-      ...hero,
-      currentHP: hero.currentHP - damageTaken,
-      abilityCooldown: hero.abilityCooldown - 1,
-    };
-    setHero(newHero);
-    // Message to be output when button is clicked and actions are taken.
-    let resultsMessage: string;
-    // If player is dead, isDead set to true resulting in buttons and fight section no longer being drawn.
-    if (newHero.currentHP < 1) {
-      resultsMessage = '';
-      setIsDead(true); // End the game
-    } else if (newMob.currentHP < 1) {
-      // Player is not dead but mob is:
-      resultsMessage = `You killed ${newMob.name}! They dealt ${damageTaken} damage to you before dying.`;
-      setCurrentMob(spawnMob()); // Spawn a new mob
-      // Add a potion 20% of the time a mob is killed
-      const potionCheck = Rand(4);
-      if (potionCheck === 0) {
-        resultsMessage += ` ${newMob.name} dropped a potion.`;
-        newHero.potionCount += 1;
-      }
+    if (hero.name === 'Warrior' && hero.shield > 0) {
+      // Must handle shield damage first
+      const shieldDamage = Math.min(damageTaken, hero.shield);
+      const HPDamage = damageTaken - shieldDamage;
+      newHero = {
+        ...hero,
+        shield: hero.shield - shieldDamage,
+        currentHP: hero.currentHP - HPDamage,
+        abilityCooldown: hero.abilityCooldown - 1,
+      };
+      setHero(newHero);
     } else {
-      // Player and mob are both alive
-      const myDamageMessage =
-        damageDealt < 1
-          ? `You miss the ${currentMob.name}`
-          : `You strike the ${currentMob.name} for ${damageDealt} damage.`;
+      // Player is not a warrior, so shield doesn't apply
+      newHero = {
+        ...hero,
+        currentHP: hero.currentHP - damageTaken,
+        abilityCooldown: hero.abilityCooldown - 1,
+      };
+      setHero(newHero);
+      // Message to be output when button is clicked and actions are taken.
+      let resultsMessage: string;
+      // If player is dead, isDead set to true resulting in buttons and fight section no longer being drawn.
+      if (newHero.currentHP < 1) {
+        resultsMessage = '';
+        setIsDead(true); // End the game
+      } else if (newMob.currentHP < 1) {
+        // Player is not dead but mob is:
+        resultsMessage = `You killed ${newMob.name}! They dealt ${damageTaken} damage to you before dying.`;
+        setCurrentMob(spawnMob()); // Spawn a new mob
+        // Add a potion 20% of the time a mob is killed
+        const potionCheck = Rand(4);
+        if (potionCheck === 0) {
+          resultsMessage += ` ${newMob.name} dropped a potion.`;
+          newHero.potionCount += 1;
+        }
+      } else {
+        // Player and mob are both alive
+        const myDamageMessage =
+          damageDealt < 1
+            ? `You miss the ${currentMob.name}`
+            : `You strike the ${currentMob.name} for ${damageDealt} damage.`;
 
-      const theirDamageMessage =
-        damageTaken < 1
-          ? `The ${currentMob.name} misses you.`
-          : `You receive  ${damageTaken} damage in retaliation.`;
+        const theirDamageMessage =
+          damageTaken < 1
+            ? `The ${currentMob.name} misses you.`
+            : `You receive  ${damageTaken} damage in retaliation.`;
 
-      resultsMessage = `${myDamageMessage} ${theirDamageMessage}`;
+        resultsMessage = `${myDamageMessage} ${theirDamageMessage}`;
+      }
+
+      setStatusMessage(resultsMessage);
+      setMessageShowing(true);
     }
-
-    setStatusMessage(resultsMessage);
-    setMessageShowing(true);
   };
 
   // handleRun allows the player to spawn a new mob with full HP.
